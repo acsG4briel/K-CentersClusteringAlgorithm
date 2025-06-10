@@ -1,5 +1,7 @@
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 public class Main {
@@ -21,6 +23,22 @@ public class Main {
             System.out.println("There are no files on /TestCases");
             return;
         }
+
+        Arrays.sort(testFiles, new Comparator<File>() {
+            @Override
+            public int compare(File f1, File f2) {
+                String name1 = f1.getName();
+                String name2 = f2.getName();
+
+                if (name1.startsWith("pmed") && name2.startsWith("pmed")) {
+                    int num1 = Integer.parseInt(name1.substring(4, name1.lastIndexOf(".")));
+                    int num2 = Integer.parseInt(name2.substring(4, name2.lastIndexOf(".")));
+                    return Integer.compare(num1, num2);
+                }
+                
+                return name1.compareTo(name2);
+            }
+        });
 
         for (File testFile : testFiles) {
             if (testFile.isFile()) {
