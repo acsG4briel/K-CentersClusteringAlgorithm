@@ -10,7 +10,7 @@ import java.util.concurrent.TimeoutException;
 
 // Class created to apply the methods on all graph instances
 public class ProblemTester {
-    private static final long TIME_LIMIT_MINUTES = 1;
+    private static final long TIME_LIMIT_MINUTES = 30;
 
     public ProblemTester() {
     }
@@ -33,21 +33,20 @@ public class ProblemTester {
             for (var graph : graphs) {
                 System.out.println("Processing graph " + i + "...");
 
-                // Execute the average method (no time limit)
+                // Execute the average method
                 MethodResult resultM2 = am.execute(graph);
-                resultsMethod2.println(String.format("%d,%d,%d,%.1f,%d",
+                resultsMethod2.println(String.format("%d,%d,%d,%.1f",
                         i, resultM2.executionTimeMs,
-                        resultM2.comparisons, resultM2.radius, resultM2.solutionType));
+                        resultM2.comparisons, resultM2.radius));
                 resultsMethod2.flush();
 
-                // Resetar o estado do ExactMethod antes de cada execução
                 em.resetTimeout();
 
                 // Execute the exact method with a time limit
                 MethodResult resultM1 = executeWithTimeLimit(em, graph, resultM2.radius);
-                resultsMethod1.println(String.format("%d,%d,%d,%.1f,%d",
+                resultsMethod1.println(String.format("%d,%d,%d,%.1f",
                         i, resultM1.executionTimeMs,
-                        resultM1.comparisons, resultM1.radius, resultM1.solutionType));
+                        resultM1.comparisons, resultM1.radius));
 
                 resultsMethod1.flush();
 
@@ -66,7 +65,6 @@ public class ProblemTester {
         }
     }
 
-    // Execute a method with a time limit
     private MethodResult executeWithTimeLimit(ExactMethod em, EdgeWeightedGraph graph, double superiorLimit) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Future<MethodResult> future = executor.submit(() -> em.execute(graph, superiorLimit));
@@ -95,14 +93,14 @@ public class ProblemTester {
             }
 
             long executionTime = TIME_LIMIT_MINUTES * 60 * 1000;
-            return new MethodResult(executionTime, em.getComparisons(), em.getBestRadius(), 2);
+            return new MethodResult(executionTime, em.getComparisons(), em.getBestRadius());
 
         } catch (Exception e) {
             System.err.println("Error executing exact method: " + e.getMessage());
             e.printStackTrace();
             executor.shutdownNow();
 
-            return new MethodResult(0, 0, superiorLimit, 0);
+            return new MethodResult(0, 0, superiorLimit);
         }
     }
 }

@@ -30,6 +30,7 @@ public class ExactMethod {
         return minRadius;
     }
 
+    // Finds the exact solution to the K-Center problem but not in a polinomial time
     public MethodResult execute(EdgeWeightedGraph graph, double superiorLimit) {
         timeoutCheckCounter = 0;
         resetTimeout();
@@ -37,6 +38,7 @@ public class ExactMethod {
         startTime = System.currentTimeMillis();
         comparisons = 0;
 
+        // Inicializes the superior limit as the aproximate result from the average method
         minRadius = superiorLimit;
 
         int V = graph.V();
@@ -48,8 +50,12 @@ public class ExactMethod {
         bestCenters = new int[k];
         int[] currentCenters = new int[k];
 
+
+        // Find the most suitable vertex to be centers and order them
         Integer[] vertexOrder = precomputeVertexOrder(V);
 
+
+        // Analyze all combinations with the improvements made before until the best solution is found or the time is over
         try {
             findBestCentersOrdered(0, 0, currentCenters, k, V, vertexOrder);
         } catch (InterruptedException e) {
@@ -59,17 +65,13 @@ public class ExactMethod {
         long endTime = System.currentTimeMillis();
         long executionTimeMs = endTime - startTime;
 
-        int solutionType = 0;
-
         if (minRadius == superiorLimit) {
             System.out.println("No better solution than the upper bound was found.");
-            solutionType = 2;
         } else {
             System.out.println("Best solution found: " + minRadius);
-            solutionType = 1;
         }
 
-        return new MethodResult(executionTimeMs, comparisons, minRadius, solutionType);
+        return new MethodResult(executionTimeMs, comparisons, minRadius);
     }
 
     private Integer[] precomputeVertexOrder(int V) {

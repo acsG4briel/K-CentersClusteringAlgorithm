@@ -7,7 +7,7 @@ public class AverageMethod {
     public AverageMethod() {
     }
 
-    // Finds the best radius for a EdgeWeightedGraph
+    // Finds the best aproximate radius for a EdgeWeightedGraph in a polinomial time
     public MethodResult execute(EdgeWeightedGraph graph) {
         long startTime = System.currentTimeMillis();
         long comparisons = 0;
@@ -97,7 +97,7 @@ public class AverageMethod {
         long endTime = System.currentTimeMillis();
         long executionTimeMs = endTime - startTime;
 
-        return new MethodResult(executionTimeMs, comparisons, radius, 2);
+        return new MethodResult(executionTimeMs, comparisons, radius);
     }
 
     private int findMostCentralVertex(double[][] distances, int V, long comparisons) {
